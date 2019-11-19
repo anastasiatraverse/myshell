@@ -10,3 +10,4 @@ add_executable(myshell main.cpp)
 add_executable(myls myls.cpp)
 
 target_link_libraries(myshell Boost::program_options Boost::filesystem)
+target_link_libraries(myls Boost::program_options Boost::filesystem)
