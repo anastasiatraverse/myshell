@@ -35,17 +35,19 @@ void parse_opt(int argc, char *argv[]){
     opt::options_description hidden("Hidden options");
     hidden.add_options()
             ("files", opt::value<std::vector<std::string>>()->default_value(std::vector<std::string>{"."}, "."), "path to directory or files");
-
+    
     opt::options_description options;
     options.add(desc).add(hidden);
+
     opt::positional_options_description positional;
     positional.add("files", -1);
     opt::variables_map vm;
-    auto parsed = opt::command_line_parser(argc, argv).options(options).positional(positional).run();
 
+    auto parsed = opt::command_line_parser(argc, argv).options(options).positional(positional).run();
     opt::store(parsed, vm);
     //must be called after parsing and storing command line
     opt::notify(vm);
+    
 
     if (vm.count("help")){
         std::cout<<desc<<std::endl;
@@ -153,7 +155,6 @@ void find_all_dir(std::string inputPath, std::vector<boost::filesystem::path> &f
         }else{
             files.push_back(entry.path());
         }
-
     }
 }
 
@@ -213,10 +214,12 @@ void print_long_info(std::string el){
 }
 
 int main(int argc, char *argv[]) {
-    std::vector <boost::filesystem::path> files;
-    parse_opt(argc, argv);
+    std::vector<boost::filesystem::path> files;
+    if(argc-1>0)
+        parse_opt(argc, argv);
     if (fvec.size()>0){
         for (auto &el:fvec){
+            
             boost::filesystem::path path(el);
             if(!boost::filesystem::is_directory(el)){
                 print_long_info(el);
@@ -229,7 +232,6 @@ int main(int argc, char *argv[]) {
     }
     std::vector<std::string> f = update_res(files);
     check_sort(f);
-
     if(r){
         std::reverse(f.begin(),f.end());
     }
@@ -238,8 +240,9 @@ int main(int argc, char *argv[]) {
             print_long_info(el);
         }
     }else{
-        for(auto &el:f)
-            std::cout<<el<<" ";
+        for(auto &el:f){
+            std::cout<<el<<std::endl;
+        }
     }
 
     return 0;
