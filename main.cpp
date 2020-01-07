@@ -8,9 +8,30 @@ std::vector<std::string> hist_s;
 std::vector<std::string> local_var;
 std::vector<std::string> global_var;
 extern char **environ;
-
 boost::filesystem::path mainpath;
 
+void stdout_to_file(std::vector<std::string> command_v){
+    std::cout<<"PRIVET VANYA"<<std::endl;
+    std::string file_name=command_v[2];
+}
+
+void stderr_to_file(std::vector<std::string> command_v){
+    std::string file_name;
+}
+
+std::string command_comments(std::string command_v){
+   std::string out = "";
+   bool comment = false;
+   for(auto el:command_v){
+        if(el=='#')comment=true;
+        if (!comment)
+        {
+            /* code */
+            out+=el;
+        }
+   }
+   return out;
+}
 
 void split(std::string str, std::vector<std::string> &v, char split_char){
     std::string word = "";
@@ -90,6 +111,7 @@ int run_prg2(const std::vector<std::string> args){
     pid_t parent = getpid();
     pid_t pid = fork();
 
+    
     std::string prg_name = args[0];
 
     if (pid == -1)
@@ -115,8 +137,13 @@ int run_prg2(const std::vector<std::string> args){
         //! Environment is ready
         //! Prepare args array in form suitable for execvp
         std::vector<const char*> arg_for_c;
-        for(auto s: args)
-            arg_for_c.push_back(s.c_str());
+        for(int i=0;i<args.size();i++){
+            arg_for_c.push_back(args[i].c_str());
+        }
+        for(auto s:arg_for_c)
+            std::cout<<s<<std::endl;
+
+
         arg_for_c.push_back(nullptr);
 
         execvp(prg_name.c_str(), const_cast<char* const*>(arg_for_c.data()));
@@ -204,6 +231,7 @@ void merrno_func(const std::vector<std::string> &command_v){
 }
 
 void check_command(std::vector<std::string> &command_v){
+    // stdout_to_file(command_v);
     if(command_v[0] == "mexit")mexit_func(command_v);
     if(command_v[0] == "mpwd")mpwd_func(command_v);
     if(command_v[0] == "merrno")merrno_func(command_v);
@@ -216,8 +244,7 @@ void check_command(std::vector<std::string> &command_v){
         std::cout<<"should be run mycp programm"<<std::endl;
     if(command_v[0] == "mymv")
         std::cout<<"should be run mymv programm"<<std::endl;
-    if(command_v[0] == "myrm")
-        std::cout<<"should be run myrm programm"<<std::endl;
+    if(command_v[0] == "myrm") run_prg2(command_v);
     if(command_v[0] == "mymkdir")run_prg2(command_v);
     if(command_v[0] == "mygrep")
         std::cout<<"should be run mygrep programm"<<std::endl;
