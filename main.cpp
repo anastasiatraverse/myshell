@@ -11,11 +11,12 @@ extern char **environ;
 boost::filesystem::path mainpath;
 
 void stdout_to_file(std::vector<std::string> command_v){
-    std::cout<<"PRIVET VANYA"<<std::endl;
+    std::cout<<"stdout_to_file"<<std::endl;
     std::string file_name=command_v[2];
 }
 
 void stderr_to_file(std::vector<std::string> command_v){
+    std::cout<<"stderr_to_file"<<std::endl;
     std::string file_name;
 }
 
@@ -232,6 +233,7 @@ void merrno_func(const std::vector<std::string> &command_v){
 
 void check_command(std::vector<std::string> &command_v){
     // stdout_to_file(command_v);
+    if(command_v[0] == "-h" || command_v[0]=="--help")std::cout<<"call help function"<<std::endl;
     if(command_v[0] == "mexit")mexit_func(command_v);
     if(command_v[0] == "mpwd")mpwd_func(command_v);
     if(command_v[0] == "merrno")merrno_func(command_v);
@@ -240,15 +242,11 @@ void check_command(std::vector<std::string> &command_v){
     if(command_v[0] == "mecho")mecho_func(command_v);
     if(command_v[0] == "myls")run_prg2(command_v);
     if(command_v[0] == "mycat")run_prg2(command_v);
-    if(command_v[0] == "mycp")
-        std::cout<<"should be run mycp programm"<<std::endl;
-    if(command_v[0] == "mymv")
-        std::cout<<"should be run mymv programm"<<std::endl;
+    if(command_v[0] == "mycp")run_prg2(command_v);
+    if(command_v[0] == "mymv")run_prg2(command_v);
     if(command_v[0] == "myrm") run_prg2(command_v);
     if(command_v[0] == "mymkdir")run_prg2(command_v);
-    if(command_v[0] == "mygrep")
-        std::cout<<"should be run mygrep programm"<<std::endl;
-    
+    if(command_v[0] == "mygrep")run_prg2(command_v);
     bool p = check_if_prog(command_v);
     if(p){
     	run_prg2(command_v);
