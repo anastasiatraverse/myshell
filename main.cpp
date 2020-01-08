@@ -109,8 +109,10 @@ std::string command_comments(const std::string command_v){
    return out;
 }
 
+
+
 void built_in_command(std::vector<std::string> &command_v){
-    if(command_v[0] == "-h" || command_v[0]=="--help")std::cout<<"call help function"<<std::endl;
+    if(command_v[0] == "-h" || command_v[0]=="--help")help_function();
     else if(command_v[0] == "mexit")mexit_func(command_v);
     else if(command_v[0] == "mpwd")mpwd_func(command_v);
     else if(command_v[0] == "merrno")merrno_func(command_v);

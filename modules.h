@@ -1,5 +1,11 @@
 #include "utils.h"
 
+void help_function(){
+    std::cout<<"----HELP-----"<<std::endl;
+    std::cout<<"- For exit press CTRL+C or enter in myshell mexit"<<std::endl;
+    std::cout<<"-h | -- help - display help information"<<std::endl;
+}
+
 void mecho_func(std::vector<std::string> &command_v){
 	bool d = false;
 	for(auto el: command_v){
