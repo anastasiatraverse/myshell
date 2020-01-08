@@ -109,8 +109,6 @@ std::string command_comments(const std::string command_v){
    return out;
 }
 
-
-
 void built_in_command(std::vector<std::string> &command_v){
     if(command_v[0] == "-h" || command_v[0]=="--help")help_function();
     else if(command_v[0] == "mexit")mexit_func(command_v);
@@ -179,12 +177,11 @@ void check_for_command_to_var(std::string command){
 
 void check_command(std::vector<std::string> command_v){
 	if(find_el(command_v, "|")) conveyor(command_v);
-    else if(command_v[1] == "&") run_in_background(command_v);
-    else if(command_v[1] == ">") stdout_to_file(command_v);
-    else if(command_v[1] == "2>") stdout_to_file(command_v);
-    else if(command_v[1] == "<") stdin_fromfile(command_v);
-    else if(command_v[3] == "2>&1")stdout_to_file(command_v);
-
+    else if(find_el(command_v,"&")) run_in_background(command_v);
+    else if(find_el(command_v,">")) stdout_to_file(command_v);
+    else if(find_el(command_v, "2>")) stdout_to_file(command_v);
+    else if(find_el(command_v, "<")) stdin_fromfile(command_v);
+    else if(find_el(command_v, "2>&1")) stdout_to_file(command_v);
     else built_in_command(command_v);
 
     bool p = check_if_prog(command_v);
