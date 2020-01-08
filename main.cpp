@@ -172,7 +172,6 @@ void check_for_command_to_var(std::string command){
 		std::string v1 = var_name+"="+result;
 		local_var.push_back(v1);
 	}
-	
 }
 
 void check_command(std::vector<std::string> command_v){
