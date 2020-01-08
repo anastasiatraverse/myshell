@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 FIND_PACKAGE(Boost 1.69 COMPONENTS program_options REQUIRED)
 FIND_PACKAGE(Boost 1.69 COMPONENTS filesystem REQUIRED)
 
-add_executable(myshell main.cpp modules.h)
+add_executable(myshell main.cpp modules.h utils.h)
 add_executable(myls myls.cpp)
 add_executable(mycat mycat.cpp)
 add_executable(mymv mymv.cpp)

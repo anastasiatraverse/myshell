@@ -1,75 +1,4 @@
-std::vector<int> history;
-std::vector<std::string> hist_s;
-std::vector<std::string> local_var;
-std::vector<std::string> global_var;
-extern char **environ;
-boost::filesystem::path mainpath;
-
-void split(std::string str, std::vector<std::string> &v, char split_char){
-    std::string word = "";
-    for (auto x : str){
-        if (x == split_char){
-            v.push_back(word);
-            word = "";
-        }else
-            word = word + x;
-    }
-    v.push_back(word);
-}
-
-void check_for_var(std::vector<std::string> &command_v){
-	bool d = false;
-	bool eq = false;
-    for(auto el:command_v){
-        for (auto x : el){
-            if(x == '=')
-                eq = true;
-            if(x == '$')
-            	d = true;
-        }
-        if(d || eq){
-            local_var.push_back(el);
-        }
-    }
-}
-
-void find_var(const std::string var){
-	for(auto el:global_var){
-        std::vector<std::string> temp_var;
-        split(var, temp_var, '$');
-        std::string upd_var = temp_var[1];
-		std::vector<std::string> v;
-		split(el, v, '=');
-		if(v[0] == upd_var){
-			std::cout<<v[1]<<std::endl;
-			history.push_back(0);
-		}
-	}
-}
-
-
-
-
-bool check_if_prog(std::vector<std::string> &command_v){
-	for(auto el:command_v){
-		for(int i=0;i<el.length()-1;i++){
-			if(el[i]=='.' && el[i+1]=='/'){
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-
-
-
-bool check_dir(const std::string obj){
-    boost::filesystem::path fpath(obj);
-    if (boost::filesystem::exists(fpath) && boost::filesystem::is_directory(fpath))
-        return true;
-    return false;
-}
+#include "utils.h"
 
 void mecho_func(std::vector<std::string> &command_v){
 	bool d = false;
@@ -90,7 +19,7 @@ void mecho_func(std::vector<std::string> &command_v){
 	}
 }
 
-int run_prg2(const std::vector<std::string> args){
+void run_prg2(const std::vector<std::string> args){
     pid_t parent = getpid();
     pid_t pid = fork();
 
@@ -107,6 +36,9 @@ int run_prg2(const std::vector<std::string> args){
         // We are parent process
         int status;
         waitpid(pid, &status, 0);
+        if (background){
+        	return;
+        }
         std::cout << "Parent: child stopped, exit code: " << status << std::endl;
     }
     else
@@ -133,7 +65,13 @@ int run_prg2(const std::vector<std::string> args){
         std::cerr << "Parent: Failed to execute \n\tCode: " << errno << std::endl;
         exit(EXIT_FAILURE);   
     }
-    return 0;
+}
+
+int run_in_background(std::vector<std::string> &args){
+   	args.erase(std::remove(args.begin(), args.end(), "&"), args.end());
+   	background = true;
+   	run_prg2(args);
+   	return 0;
 }
 
 

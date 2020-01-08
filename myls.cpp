@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
         }
     }else{
         for(auto &el:f){
-            std::cout<<el<<std::endl;
+            std::cout<<el<<" ";
         }
     }
 
