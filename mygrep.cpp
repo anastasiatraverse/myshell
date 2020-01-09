@@ -59,20 +59,33 @@ void all_lower(std::vector<std::string> &lines){
 	}
 }
 
-void inver_filter_lines(std::vector<std::string> lines){}
-void filter_lines(std::vector<std::string> lines){}
+void inver_filter_lines(std::vector<std::string> lines){
+	std::cout<<"inver_filter_lines"<<std::endl;
+}
+void filter_lines(std::vector<std::string> lines){
+	std::cout<<"filter_lines"<<std::endl;
+}
+void filter_by_regex(std::vector<std::string> lines){
+	std::cout<<"filter_by_regex"<<std::endl;
+}
+
 
 void check_command(std::vector<std::string> &command_v){
+	std::vector<std::string> lines;
 	if(file){
 		std::vector<std::string> file_v;
 		for(auto element:command_v)
 			if(element.find("--file") != std::string::npos){
 				split(element,file_v, '=');
 			}
-		std::vector<std::string> lines;
 		read_file(file_v[1], lines);
-		if(ignore_case) all_lower(lines);
+		
 	}
+	if(ignore_case) all_lower(lines);
+
+	if(regex) filter_by_regex(lines);
+	else if(invert) inver_filter_lines(lines);
+	else filter_lines(lines);
 }
 
 void parse_command_line(std::vector<std::string> &command_v){
