@@ -4,9 +4,15 @@
 #include <fstream>
 #include <algorithm>
 #include <cctype>
+#include <regex> 
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
+
 
 std::string filter_string;
+std::string regex_string;
+std::vector<std::string> lines;
+
 bool ignore_case = false;
 bool invert = false;
 bool regex = false;
@@ -60,49 +66,51 @@ void all_lower(std::vector<std::string> &lines){
 }
 
 void inver_filter_lines(std::vector<std::string> lines){
-	std::cout<<"inver_filter_lines"<<std::endl;
+	std::regex reg(regex_string);
 	std::vector<std::string> v_out;
-
 	for(auto data:lines){
-		std::vector<std::string> temp_vector;
-		split(data, temp_vector, ' ');
-		if(!find_el(temp_vector, filter_string))
+		if(!std::regex_match (data, reg))
 			v_out.push_back(data);
 	}
-
 	for(auto el:v_out)
 		std::cout<<el<<std::endl;
 }
+
 void filter_lines(std::vector<std::string> lines){
+	std::regex reg(regex_string);
 	std::vector<std::string> v_out;
 	for(auto data:lines){
-		std::vector<std::string> temp_vector;
-		split(data, temp_vector, ' ');
-		if(find_el(temp_vector, filter_string))
+		if(std::regex_match (data, reg))
 			v_out.push_back(data);
 	}
 	for(auto el:v_out)
 		std::cout<<el<<std::endl;
 }
-void filter_by_regex(std::vector<std::string> lines){
-	std::cout<<"filter_by_regex"<<std::endl;
-}
+
 
 void check_command(std::vector<std::string> &command_v){
-	std::vector<std::string> lines;
 	if(file){
 		std::vector<std::string> file_v;
-		for(auto element:command_v)
-			if(element.find("--file") != std::string::npos){
+		for(auto element:command_v){
+			if(element.find("--file") != std::string::npos)
 				split(element,file_v, '=');
-			}
+		}
 		read_file(file_v[1], lines);
 		
 	}
-	if(ignore_case) all_lower(lines);
 
-	if(regex) filter_by_regex(lines);
-	else if(invert) inver_filter_lines(lines);
+	if(regex){
+		for(auto element:command_v){
+			std::vector<std::string> regex_v;
+			if(element.find("--regexp") != std::string::npos)
+				split(element,regex_v, '=');
+			regex_string=regex_v[1];
+		}	
+	}
+
+	if(ignore_case) all_lower(lines);
+	
+	if(invert) inver_filter_lines(lines);
 	else filter_lines(lines);
 }
 
@@ -113,7 +121,7 @@ void parse_command_line(std::vector<std::string> &command_v){
 	for(auto element:command_v){
 		if(element.find("--regexp") != std::string::npos) regex = true;
 		else if(element.find("--file") != std::string::npos) file = true;
-		else filter_string = element;
+		else lines.push_back(element);
 	}
 }
 
